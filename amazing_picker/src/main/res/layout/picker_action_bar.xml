@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:showIn="@layout/picker_recycler_layout">
+
+    <ImageButton
+        android:background="@color/transparent"
+        android:id="@+id/picker_nav"
+        android:layout_width="0dp"
+        android:tint="@color/white"
+        android:layout_height="60dp"
+        android:layout_gravity="start|center"
+        android:layout_weight="1"
+        android:src="@drawable/ic_arrow_back_black_24dp"
+     />
+
+    <TextView
+        android:id="@+id/folder_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="0dp"
+        android:layout_weight="2"
+        android:text="Folder name"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        app:fontFamily="serif" />
+
+    <ImageButton
+        android:id="@+id/cancel_picker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.5"
+        android:background="@color/transparent"
+        android:tint="@color/white"
+        android:src="@drawable/ic_cancel_event" />
+
+</LinearLayout>
+
+    <!--    <Spinner-->
+    <!--        android:id="@+id/spin"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_margin="2dp"-->
+    <!--        android:layout_weight="1.5">-->
+
+    <!--    </Spinner>-->
+
+    <!--</androidx.appcompat.widget.Toolbar>-->
+

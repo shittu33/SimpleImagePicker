@@ -1,0 +1,2 @@
+rootProject.name='Simple Image Picker'
+include ':app', ':amazing_picker'
