@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -48,9 +49,9 @@ public class ImagesRecylerAdapter extends RecyclerView.Adapter<SelectableViewHol
 
     }
 
+    @NonNull
     @Override
-    public SelectableViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
+    public SelectableViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.i(recyclerTAG, " onCreateViewHolder: called ");
         View v = LayoutInflater.from(context).inflate(R.layout.picker_recycler_item, parent, false);
         return new SelectableViewHolder(v, this);
@@ -60,7 +61,7 @@ public class ImagesRecylerAdapter extends RecyclerView.Adapter<SelectableViewHol
     public void onBindViewHolder(final SelectableViewHolder holder, final int position) {
         Selectable_image selectable_image = selectable_images.get(position);
         String selectable_path = selectable_image.getSelectable_path();
-        holder.img.setImageResource(R.drawable.ic_radio_button_unchecked_black_24dp);
+        holder.img.setImageResource(R.drawable.ic_radio_button_unchecked_light_24dp);
 
         Glide.with(context)
                 .load(Uri.fromFile(new File(selectable_path)))
@@ -73,34 +74,61 @@ public class ImagesRecylerAdapter extends RecyclerView.Adapter<SelectableViewHol
 
     @Override
     public void onImageSelected(Selectable_image selected_image) {
-        if (!isMultiSelectionEnabled) {
+        selectImage(selected_image);
+        selectionListener.onImageSelected(selected_image);
+    }
 
+    @Override
+    public void onImageRadioSelected(Selectable_image selected_image) {
+        selectImage(selected_image);
+        selectionListener.onImageRadioSelected(selected_image);
+    }
+
+    private void selectImage(Selectable_image selected_image) {
+        if (!isMultiSelectionEnabled) {
             for (Selectable_image selectable_image : selectable_images) {
                 if (!selectable_image.equals(selected_image) && selectable_image.isSelected()) {
                     selectable_image.set_selected(false);
+                    indexed_selectable_images.remove(selected_image);
                 } else if (selectable_image.equals(selected_image) && selected_image.isSelected()) {
                     selectable_image.set_selected(true);
+                    indexed_selectable_images.add(selected_image);
                 }
             }
             notifyDataSetChanged();
-        }
-        if (selected_image.isSelected()) {
-            indexed_selectable_images.add(selected_image);
         } else {
-            indexed_selectable_images.remove(selected_image);
+            if (selected_image.isSelected()) {
+                indexed_selectable_images.add(selected_image);
+            } else {
+                indexed_selectable_images.remove(selected_image);
+            }
         }
-        selectionListener.onImageSelected(selected_image);
+    }
+
+    public void addToSelected(Selectable_image selected_image) {
+        indexed_selectable_images.add(selected_image);
+
+    }
+
+    public void ClearSelected() {
+        indexed_selectable_images = new ArrayList<>();
     }
 
     public ArrayList<Selectable_image> getIndexed_selectable_images() {
         if (indexed_selectable_images.isEmpty()) {
             Log.i(PIC_TAG, "indexed_selectable_images is empty ");
         }
-        return indexed_selectable_images;
+        ArrayList<Selectable_image> selectedItems = new ArrayList<>();
+        for (Selectable_image item : indexed_selectable_images) {
+            if (item.isSelected()) {
+                selectedItems.add(item);
+            }
+        }
+        return selectedItems;
+//        return indexed_selectable_images;
     }
 
     public List<Selectable_image> getSelectedItems() {
-
         List<Selectable_image> selectedItems = new ArrayList<>();
         for (Selectable_image item : selectable_images) {
             if (item.isSelected()) {

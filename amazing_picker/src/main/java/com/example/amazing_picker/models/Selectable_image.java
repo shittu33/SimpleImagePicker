@@ -25,12 +25,13 @@ public class Selectable_image implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null){
+        if (obj == null) {
             return false;
         }
-
-        Selectable_image selectable_image_comp = (Selectable_image) obj;
-        return selectable_image_comp.getSelectable_path().equals(this.getSelectable_path());
-
+        if (obj instanceof Selectable_image) {
+            Selectable_image selectable_image_comp = (Selectable_image) obj;
+            return selectable_image_comp.getSelectable_path().equals(this.getSelectable_path());
+        }
+        return false;
     }
 }

@@ -1,115 +1,239 @@
 package com.example.amazing_picker.activities;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatRadioButton;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.amazing_picker.R;
 import com.example.amazing_picker.Veiws.ExtendedViewPager;
-import com.example.amazing_picker.utilities.ImageCursorLoaderUtils;
+import com.example.amazing_picker.adapters.ImagePagerAdapter;
+import com.example.amazing_picker.models.Selectable_image;
+import com.warkiz.widget.IndicatorSeekBar;
+import com.warkiz.widget.OnSeekChangeListener;
+import com.warkiz.widget.SeekParams;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
-public class PreviewActivity extends AppCompatActivity {
+import static com.example.amazing_picker.activities.GalleryActivity.IMAGES_COPIED;
+import static com.example.amazing_picker.activities.GalleryActivity.IMAGES_SELECTED;
+import static com.example.amazing_picker.activities.GalleryActivity.PICS_key;
+import static com.example.amazing_picker.utilities.ImageCursorLoaderUtils.PIC_TAG;
+
+public class PreviewActivity extends AppCompatActivity implements
+        OnSeekChangeListener, View.OnClickListener, ViewPager.OnPageChangeListener {
+    private IndicatorSeekBar indicatorSeekBar;
+    private ExtendedViewPager pager;
+    private ImagePagerAdapter pagerAdapter;
+    private ImageButton exit_btn;
+    private Button copy_btn;
+    private AppCompatRadioButton select_btn;
+    private TextView title_tv;
+    public boolean is_to_check;
+    int prev_position = 0;
+    int current_postion = 0;
+    private AppCompatRadioButton select_btn_all;
+    private boolean is_all_selected;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.previewStyle);
         setContentView(R.layout.picker_preview_pager);
-        ArrayList<String> images = getIntent().getStringArrayListExtra("list");
-        ExtendedViewPager mViewPager = findViewById(R.id.view_pager);
-//        mViewPager.SetAdapter(new Img_pagerAdapter(images));
-        Log.i(ImageCursorLoaderUtils.PIC_TAG, "afeter setting pager layout");
+        init();
     }
 
-//    public static class Img_pagerAdapter extends PagerAdapter {
-//
-//        ArrayList<Selectable_image> images;
-//        ArrayList<Selectable_image> tmp_selected_images = new ArrayList<>();
-////        List<String> tmp_selected_images = new ArrayList<>();
-//        Picker_Activity picker_activity;
-//
-//        //        private static int[] image = {R.drawable.p1_480, R.drawable.p2_480, R.drawable.p3_480, R.drawable.p5_720, R.drawable.p6_480};
-//        public Img_pagerAdapter(Picker_Activity picker_activity, ArrayList<Selectable_image> images) {
-//            this.images = images;
-//            this.picker_activity = picker_activity;
-//            if (!images.isEmpty()) {
-//                picker_activity.getSelect_btn().setChecked(images.get(0).isSelected());
-//                picker_activity.getSelect_btn().setText(images.get(0).isSelected()?"Deselect":"Select");
-//                tmp_selected_images.clear();
-//                tmp_selected_images.addAll(images);
-//            }
-//            updateSelectedNo(tmp_selected_images.size());
+    private void init() {
+        initView();
+        initAdapter();
+
+    }
+
+    ArrayList<Selectable_image> selected_pics;
+
+    private void initAdapter() {
+        final Intent intent = getIntent();
+        if (intent != null) {
+            selected_pics = (ArrayList<Selectable_image>) intent.getSerializableExtra(PICS_key);
+            Log.i(PIC_TAG, "first image is "
+                    + selected_pics.get(0).getSelectable_path());
+            pagerAdapter = new ImagePagerAdapter(this,
+                    selected_pics);
+            pager.setAdapter(pagerAdapter);
+            pager.addOnPageChangeListener(this);
+            title_tv.setText(pagerAdapter.getPageTitle(0));
+            if (selected_pics.size() > 0) {
+                indicatorSeekBar.setVisibility(View.VISIBLE);
+            }
+            indicatorSeekBar.setMin(1);
+            indicatorSeekBar.setThumbAdjustAuto(false);
+        }
+    }
+
+    private void initView() {
+        pager = findViewById(R.id.view_pager);
+        exit_btn = findViewById(R.id.exit_btn);
+        copy_btn = findViewById(R.id.copy_btn);
+        title_tv = findViewById(R.id.title_tv);
+        select_btn = findViewById(R.id.radio_btn);
+        select_btn_all = findViewById(R.id.radio_btn_all);
+        indicatorSeekBar = findViewById(R.id.indicator_seekbar);
+        indicatorSeekBar.setOnSeekChangeListener(this);
+        copy_btn.setOnClickListener(this);
+        exit_btn.setOnClickListener(this);
+        select_btn.setOnClickListener(this);
+        select_btn_all.setOnClickListener(this);
+    }
+
+
+    @Override
+    public void onSeeking(SeekParams seekParams) {
+        if (pagerAdapter != null) {
+            if (seekParams.fromUser) {
+                pager.setCurrentItem(seekParams.progress);
+            }
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(IndicatorSeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(IndicatorSeekBar seekBar) {
+
+    }
+
+    public Button getCopy_btn() {
+        return copy_btn;
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.exit_btn) {
+            onBackPressed();
+        } else if (id == R.id.copy_btn) {
+            saveImagesFromSelectedList(selected_pics, true);
+        } else if (id == R.id.radio_btn) {
+            SelectOrDeselectImage();
+        } else if (id == R.id.radio_btn_all) {
+            SelectOrDeselectAllImages();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        saveImagesFromSelectedList(selected_pics, false);
+        super.onBackPressed();
+    }
+
+    private void saveImagesFromSelectedList(List<Selectable_image> selectable_pics, boolean is_copy) {
+        Intent result_intent = new Intent();
+        result_intent.putExtra(PICS_key, (Serializable) selectable_pics);
+        if (is_copy) {
+            setResult(IMAGES_COPIED, result_intent);
+        } else {
+            setResult(IMAGES_SELECTED, result_intent);
+        }
 //        }
-//
-//        public void updateSelectedNo(int i) {
-//            String btn_txt_builder = "COPY" +
-//                    "(" +
-//                    i +
-//                    ")";
-//            picker_activity.getCopy_btn().setText(btn_txt_builder);
-//        }
-//
-//
-//        public ArrayList<Selectable_image> getImages() {
-//            return images;
-//        }
-//
-//        public ArrayList<Selectable_image> getTmp_selected_images() {
-//            return tmp_selected_images;
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return images.size();
-//        }
-//
-//        @Nullable
-//        @Override
-//        public CharSequence getPageTitle(int position) {
-//            String image_name = new File(images.get(position).getSelectable_path()).getName();
-//            return image_name.length()>15?image_name.substring(0,15)+"...":image_name;
-//        }
-//
-//        @Override
-//        public int getItemPosition(@NonNull Object object) {
-//            return super.getItemPosition(object);
-//        }
-//
-//        @NonNull
-//        @Override
-//        public View instantiateItem(ViewGroup container, int position) {
-//            Log.i(ImageCursorLoaderUtils.PIC_TAG, "TouchImageView is clear");
-//            TouchImageView img = new TouchImageView(container.getContext());
-//            img.setImageResource(R.drawable.ic_radio_button_unchecked_black_24dp);
-//            Selectable_image selectable_image = images.get(position);
-//            String image_path = selectable_image.getSelectable_path();
-//
-//            Glide.with(container.getContext())
-//                    .load(Uri.fromFile(new File(image_path)))
-////                    .placeholder(R.drawable.trimed_logo)
-//                    .into(img);
-////            GlideApp.with(container.getContext())
-////                    .load(Uri.fromFile(new File(image_path)))
-////                    .placeholder(R.drawable.trimed_logo)
-////                    .into(img);
-//            Log.i(ImageCursorLoaderUtils.PIC_TAG, "image is set");
-//            container.addView(img, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-//            Log.i(ImageCursorLoaderUtils.PIC_TAG, "image added to the container");
-//            return img;
-//        }
-//
-//        @Override
-//        public void destroyItem(ViewGroup container, int position, Object object) {
-//            container.removeView((View) object);
-//        }
-//
-//        @Override
-//        public boolean isViewFromObject(View view, Object object) {
-//            return view == object;
-//        }
-//
-//    }
+        finish();
+    }
+
+    private void SelectOrDeselectAllImages() {
+        ArrayList<Selectable_image> selectable_images = pagerAdapter.getImages();
+        ArrayList<Selectable_image> tmp_selectable_images = pagerAdapter.getTmp_selected_images();
+        is_all_selected = !select_btn_all.getText().equals(getString(R.string.select_all_txt));
+        if (is_all_selected) {
+            select_btn_all.setChecked(false);
+            select_btn.setChecked(false);
+            select_btn.setText(getString(R.string.select_page));
+            for (int i = 0; i < selectable_images.size(); i++) {
+                Selectable_image selectable_image = selectable_images.get(i);
+                selectable_image.set_selected(false);
+                tmp_selectable_images.remove(selectable_image);
+            }
+            select_btn_all.setText(getString(R.string.select_all_txt));
+        } else {
+            select_btn_all.setChecked(true);
+            select_btn.setChecked(true);
+            select_btn.setText(getString(R.string.deselect_page));
+            for (int i = 0; i < selectable_images.size(); i++) {
+                Selectable_image selectable_image = selectable_images.get(i);
+                selectable_image.set_selected(true);
+                if (!tmp_selectable_images.contains(selectable_image)) {
+                    tmp_selectable_images.add(selectable_image);
+                }
+            }
+            select_btn_all.setText(getString(R.string.deselect_all_txt));
+        }
+        pagerAdapter.updateSelectedNo(tmp_selectable_images.size());
+        pagerAdapter.notifyDataSetChanged();
+    }
+
+    //Image Picker preview helper methods...
+    private void SelectOrDeselectImage() {
+        int current_adapter_index = pager.getCurrentItem();
+        ArrayList<Selectable_image> selectable_images = pagerAdapter.getImages();
+        ArrayList<Selectable_image> tmp_selectable_images = pagerAdapter.getTmp_selected_images();
+        if (selectable_images.get(current_adapter_index).isSelected()) {
+            is_to_check = false;
+        } else if (!selectable_images.get(current_adapter_index).isSelected()) {
+            is_to_check = true;
+        }
+        select_btn.setChecked(is_to_check);
+        select_btn.setText(is_to_check ? "Deselect" : "Select");
+        selectable_images.get(current_adapter_index).set_selected(is_to_check);
+        Selectable_image current_selectable_image = selectable_images.get(current_adapter_index);
+        if (is_to_check && !tmp_selectable_images.contains(current_selectable_image)) {
+            tmp_selectable_images.add(current_selectable_image);
+        } else if (!is_to_check) {
+            tmp_selectable_images.remove(current_selectable_image);
+        }
+        pagerAdapter.updateSelectedNo(tmp_selectable_images.size());
+        pagerAdapter.notifyDataSetChanged();
+
+    }
+
+    //View Pager CallBacks
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        prev_position = position;
+        indicatorSeekBar.setMax(selected_pics.size());
+        indicatorSeekBar.setProgress(position + 1);
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        current_postion = position;
+        //image preview
+        title_tv.setText(pagerAdapter.getPageTitle(position));
+        boolean is_currentPage_selected = pagerAdapter.getImages().get(position).isSelected();
+        select_btn.setChecked(is_currentPage_selected);
+        select_btn.setText(is_currentPage_selected ? "Deselect" : "Select");
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+
+    public AppCompatRadioButton getSelect_btn() {
+        return select_btn;
+    }
+
 }

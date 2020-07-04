@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:showIn="@layout/picker_recycler_layout">
+    tools:showIn="@layout/picker_recycler_layout"
+    >
 
     <ImageButton
         android:background="@color/transparent"
         android:id="@+id/picker_nav"
         android:layout_width="0dp"
-        android:tint="@color/white"
         android:layout_height="60dp"
         android:layout_gravity="start|center"
         android:layout_weight="1"
@@ -39,7 +37,6 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="0.5"
         android:background="@color/transparent"
-        android:tint="@color/white"
         android:src="@drawable/ic_cancel_event" />
 
 </LinearLayout>

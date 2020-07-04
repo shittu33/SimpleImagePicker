@@ -35,14 +35,13 @@ public class SelectableViewHolder extends RecyclerView.ViewHolder {
                 } else {
                     setChecked(true);
                 }
-                itemSelectedListener.onImageSelected(mImage);
+                itemSelectedListener.onImageRadioSelected(mImage);
 
             }
         });
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (mImage.isSelected() && getItemViewType() == MULTI_SELECTION) {
                     setChecked(false);
                 } else {
@@ -74,6 +73,7 @@ public class SelectableViewHolder extends RecyclerView.ViewHolder {
     public interface OnRecylerItemSelected {
 
         void onImageSelected(Selectable_image image);
+        void onImageRadioSelected(Selectable_image image);
     }
 
 }

@@ -53,27 +53,18 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         Log.i(recyclerTAG, " onBindViewHolder: called ");
-//        holder.root_view.getLayoutParams().height = 115;
         final Folder_image folder_model = dir_info.get(position);
         final String first_image = folder_model.getFirst_image();
         String folder_name = folder_model.getName();
-        if (folder_name.length()>19){
-            folder_name=folder_name.substring(0,19) +"...";
+        if (folder_name.length() > 19) {
+            folder_name = folder_name.substring(0, 19) + "...";
         }
-        holder.img.setImageResource(R.drawable.ic_radio_button_unchecked_black_24dp);
-        try {
+        holder.img.setImageResource(R.drawable.ic_radio_button_unchecked_light_24dp);
+        Glide.with(context)
+                .load(Uri.fromFile(new File(first_image)))
+//                .thumbnail(0.3f)
+                .into(holder.img);
 
-            Glide.with(context)
-                    .load(!first_image.equals("pdf")?Uri.fromFile(new File(first_image)):R.drawable.ic_folder_open_black_24dp)
-//                    .thumbnail(0.3f)
-                    .into(holder.img);
-
-//            GlideApp.with(context)
-//                    .load(Uri.fromFile(new File(first_image)))
-//                    .placeholder(R.drawable.ic_folder_open_black_24dp)
-//                    .into(holder.img);
-            } catch (Exception e) {
-        }
         holder.txt.setText(folder_name);
         holder.img.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,11 +73,6 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
             }
         });
     }
-
-    public int getPosition() {
-        return position;
-    }
-
 
     public interface FolderCLickListener {
         void onFolderClick(String folder_name, int position, boolean is_pdf_folder);
@@ -97,12 +83,12 @@ public class DirectoryAdapter extends RecyclerView.Adapter<DirectoryAdapter.View
         return dir_info.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView txt;
         private ImageView img;
         View root_view;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.img);
             txt = itemView.findViewById(R.id.txt);

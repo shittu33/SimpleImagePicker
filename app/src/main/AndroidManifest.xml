@@ -18,7 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.amazing_picker.activities.GalleryActivity"/>
+        <activity android:name="com.example.amazing_picker.activities.GalleryActivity"
+           />
+<!--        <activity android:name="com.example.amazing_picker.activities.GalleryActivity"/>-->
     </application>
 
 </manifest>

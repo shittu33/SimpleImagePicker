@@ -1,5 +1,6 @@
 package com.example.amazing_picker.adapters;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +14,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import com.bumptech.glide.Glide;
 import com.example.amazing_picker.R;
 import com.example.amazing_picker.Veiws.TouchImageView;
-import com.example.amazing_picker.activities.GalleryActivity;
+import com.example.amazing_picker.activities.PreviewActivity;
 import com.example.amazing_picker.models.Selectable_image;
 import com.example.amazing_picker.utilities.ImageCursorLoaderUtils;
 
@@ -22,20 +23,20 @@ import java.util.ArrayList;
 
 public class ImagePagerAdapter extends PagerAdapter {
 
-    ArrayList<Selectable_image> images;
-    ArrayList<Selectable_image> tmp_selected_images = new ArrayList<>();
-    //        List<String> tmp_selected_images = new ArrayList<>();
-    GalleryActivity picker_activity;
+    private ArrayList<Selectable_image> images;
+    private ArrayList<Selectable_image> tmp_selected_images = new ArrayList<>();
+    private PreviewActivity previewActivity;
 
-    //        private static int[] image = {R.drawable.p1_480, R.drawable.p2_480, R.drawable.p3_480, R.drawable.p5_720, R.drawable.p6_480};
-    public ImagePagerAdapter(GalleryActivity picker_activity, ArrayList<Selectable_image> images) {
+    public ImagePagerAdapter(Activity activity, ArrayList<Selectable_image> images) {
         this.images = images;
-        this.picker_activity = picker_activity;
-        if (!images.isEmpty()) {
-            picker_activity.getSelect_btn().setChecked(images.get(0).isSelected());
-            picker_activity.getSelect_btn().setText(images.get(0).isSelected() ? "Deselect" : "Select");
-            tmp_selected_images.clear();
-            tmp_selected_images.addAll(images);
+        if (activity instanceof PreviewActivity) {
+            previewActivity = (PreviewActivity) activity;
+            if (!images.isEmpty()) {
+                previewActivity.getSelect_btn().setChecked(images.get(0).isSelected());
+                previewActivity.getSelect_btn().setText(images.get(0).isSelected() ? "Deselect" : "Select");
+                tmp_selected_images.clear();
+                tmp_selected_images.addAll(images);
+            }
         }
         updateSelectedNo(tmp_selected_images.size());
     }
@@ -45,7 +46,9 @@ public class ImagePagerAdapter extends PagerAdapter {
                 "(" +
                 i +
                 ")";
-        picker_activity.getCopy_btn().setText(btn_txt_builder);
+        if (previewActivity != null) {
+            previewActivity.getCopy_btn().setText(btn_txt_builder);
+        }
     }
 
 
@@ -79,20 +82,14 @@ public class ImagePagerAdapter extends PagerAdapter {
     public View instantiateItem(ViewGroup container, int position) {
         Log.i(ImageCursorLoaderUtils.PIC_TAG, "TouchImageView is clear");
         TouchImageView img = new TouchImageView(container.getContext());
-        img.setImageResource(R.drawable.ic_radio_button_unchecked_black_24dp);
+        img.setImageResource(R.drawable.ic_radio_button_unchecked_light_24dp);
         Selectable_image selectable_image = images.get(position);
         String image_path = selectable_image.getSelectable_path();
         Glide.with(container.getContext())
                 .load(Uri.fromFile(new File(image_path)))
-                    .placeholder(R.drawable.trimed_logo)
+                .placeholder(R.drawable.ic_folder_open_black_24dp)
                 .thumbnail(0.3f)
                 .into(img);
-//            Picasso.with(container.getContext())
-//                    .load(Uri.fromFile(new File(image_path)))
-//                    .resize(220, 180).centerInside()
-//                    .placeholder(R.drawable.trimed_logo)
-//                    .noFade()
-//                    .into(img);
         Log.i(ImageCursorLoaderUtils.PIC_TAG, "image is set");
         container.addView(img, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         Log.i(ImageCursorLoaderUtils.PIC_TAG, "image added to the container");
@@ -100,12 +97,12 @@ public class ImagePagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
+    public void destroyItem(ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view == object;
     }
 
