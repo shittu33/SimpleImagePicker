@@ -56,7 +56,7 @@ public class SimpleImagePicker {
         return this;
     }
 
-    public SimpleImagePicker setResultCodeOk(int code) {
+    public SimpleImagePicker setResultCodeSuccess(int code) {
         RESULT_CODE_SUCCESS = code;
         return this;
     }
@@ -76,6 +76,9 @@ public class SimpleImagePicker {
             final Intent intent = new Intent(activity.getApplicationContext(), GalleryActivity.class);
             intent.putExtra(THEME_KEY, pickerTheme);
             intent.putExtra(MULTI_SELECT_KEY, isMultiSelection);
+            intent.putExtra(IS_OKAY, RESULT_CODE_SUCCESS);
+            intent.putExtra(IS_CANCEL, RESULT_CODE_CANCEL);
+            intent.putExtra(DATA_KEY, RESULT_DATA_KEY);
             activity.startActivityForResult(intent, PICKER_REQUEST_CODE);
         } else if (fragment != null) {
             final Intent intent = new Intent(fragment.requireContext(), GalleryActivity.class);

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/multiSelect"
+        android:title="@string/multi_selection" />
+    <item
+        android:id="@+id/single_select"
+        android:title="@string/single_selection" />
+
+</menu>

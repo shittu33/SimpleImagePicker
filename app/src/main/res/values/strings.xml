@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">Simple Image Picker</string>
+    <string name="app_name">Picker Sample</string>
+    <string name="add">add</string>
+    <string name="theme">theme</string>
+    <string name="multi_selection">Multi selection</string>
+    <string name="single_selection">Single selection</string>
+    <string name="import_images">import images</string>
 </resources>

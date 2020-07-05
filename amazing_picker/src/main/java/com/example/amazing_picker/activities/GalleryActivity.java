@@ -44,6 +44,7 @@ import static com.example.amazing_picker.utilities.SimpleImagePicker.IS_CANCEL;
 import static com.example.amazing_picker.utilities.SimpleImagePicker.IS_OKAY;
 import static com.example.amazing_picker.utilities.SimpleImagePicker.RESULT_CODE_CANCEL;
 import static com.example.amazing_picker.utilities.SimpleImagePicker.RESULT_CODE_SUCCESS;
+import static com.example.amazing_picker.utilities.SimpleImagePicker.RESULT_DATA_KEY;
 
 
 //@SuppressWarnings("ResultOfMethodCallIgnored")
@@ -205,7 +206,11 @@ public class GalleryActivity extends AppCompatActivity implements
         } else if (id == R.id.cancel_picker) {
             onBackPressed();
         } else if (id == R.id.confirm_btn) {
-            List<Selectable_image> selectable_pics = imagesRecylerAdapter.getIndexed_selectable_images();
+            List<Selectable_image> selectable_pics;
+            if (isMultiSelection)
+                selectable_pics = imagesRecylerAdapter.getIndexed_selectable_images();
+            else
+                selectable_pics = imagesRecylerAdapter.getSelectedItems();
             saveImagesFromSelectedList(selectable_pics);
         } else if (id == R.id.view_btn) {
             PreviewImages();
@@ -217,7 +222,12 @@ public class GalleryActivity extends AppCompatActivity implements
             Toast.makeText(this, "Select at least one Image", Toast.LENGTH_SHORT).show();
         } else {
             final Intent intent = new Intent(this, PreviewActivity.class);
-            intent.putExtra(PICS_key, imagesRecylerAdapter.getIndexed_selectable_images());
+            List<Selectable_image> selectable_pics;
+            if (isMultiSelection)
+                selectable_pics = imagesRecylerAdapter.getIndexed_selectable_images();
+            else
+                selectable_pics = imagesRecylerAdapter.getSelectedItems();
+            intent.putExtra(PICS_key, (Serializable) selectable_pics);
 //        intent.putExtra(PICS_key, imageList);
             Log.e(PIC_TAG, "onClick: ready to go preview");
             startActivityForResult(intent, PREVIEW_REQUEST_CODE);
@@ -231,10 +241,10 @@ public class GalleryActivity extends AppCompatActivity implements
             for (Selectable_image selectable_image : selectable_pics) {
                 selected_images.add(selectable_image.getSelectable_path());
             }
-            result_intent.putStringArrayListExtra("pics", selected_images);
-            setResult(IMAGES_SELECTED, result_intent);
+            result_intent.putStringArrayListExtra(RESULT_DATA_KEY, selected_images);
+            setResult(resultCodeSuccess, result_intent);
         } else {
-            setResult(NO_IMAGES_SELECTED);
+            setResult(resultCodeCancel);
         }
         finish();
     }
@@ -252,7 +262,10 @@ public class GalleryActivity extends AppCompatActivity implements
     }
 
     private void updateUiWhenSelected(Selectable_image image) {
-        selected_count = imagesRecylerAdapter.getIndexed_selectable_images().size();
+        if (isMultiSelection)
+            selected_count = imagesRecylerAdapter.getIndexed_selectable_images().size();
+        else
+            selected_count = imagesRecylerAdapter.getSelectedItems().size();
         Log.i(PIC_TAG, "onImageSelected: selected_count is " + selected_count);
         num_txt.setVisibility(View.VISIBLE);
         if (selected_count == 1) {
@@ -302,7 +315,6 @@ public class GalleryActivity extends AppCompatActivity implements
 //        num_txt.setVisibility(View.GONE);
         updateUiWhenSelected(imageList.get(0));
     }
-
     //Navigations
     private void AutohidePickerNavs() {
         images_RecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -320,7 +332,6 @@ public class GalleryActivity extends AppCompatActivity implements
                     num_txt.setVisibility(View.GONE);
                 }
             }
-
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -384,9 +395,11 @@ public class GalleryActivity extends AppCompatActivity implements
                             imageList.set(imageList.indexOf(pic), pic);
                             imagesRecylerAdapter.addToSelected(pic);
                         }
-                        updateUiWhenSelected(imageList.get(0));
-                        Log.i(PIC_TAG, "first image is "
-                                + imageList.get(0).getSelectable_path());
+                        if (!imageList.isEmpty()) {
+                            updateUiWhenSelected(imageList.get(0));
+                            Log.i(PIC_TAG, "first image is "
+                                    + imageList.get(0).getSelectable_path());
+                        }
                         imagesRecylerAdapter.notifyDataSetChanged();
                         break;
                     case IMAGES_COPIED:

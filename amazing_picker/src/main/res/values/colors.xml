@@ -10,6 +10,7 @@
     <color name="colorStatusDark">#1A1A1A</color>
     <color name="samplePrimaryDark">#54073004</color>
     <color name="white">#ffffff</color>
+    <color name="white_grey">#C5C2C2</color>
     <color name="transparent">#00ffffff</color>
     <color name="primaryTextColor">#292929</color>
     <color name="primaryDarkColorRed">#c85a54</color>

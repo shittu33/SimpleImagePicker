@@ -27,7 +27,7 @@
         <item name="android:radioButtonStyle">@style/GalleryDarkRadioButtonStyle</item>
     </style>
 
-    <style name="previewStyle">
+    <style name="previewStyle" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:radioButtonStyle">@style/previewRadioButtonStyle</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>

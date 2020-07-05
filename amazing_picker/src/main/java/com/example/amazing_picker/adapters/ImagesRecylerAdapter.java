@@ -89,10 +89,10 @@ public class ImagesRecylerAdapter extends RecyclerView.Adapter<SelectableViewHol
             for (Selectable_image selectable_image : selectable_images) {
                 if (!selectable_image.equals(selected_image) && selectable_image.isSelected()) {
                     selectable_image.set_selected(false);
-                    indexed_selectable_images.remove(selected_image);
+//                    indexed_selectable_images.remove(selected_image);
                 } else if (selectable_image.equals(selected_image) && selected_image.isSelected()) {
                     selectable_image.set_selected(true);
-                    indexed_selectable_images.add(selected_image);
+//                    indexed_selectable_images.add(selected_image);
                 }
             }
             notifyDataSetChanged();
