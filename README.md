@@ -37,13 +37,13 @@ Add android:requestLegacyExternalStorage="true" attribute to the application tag
 #### Start Picker
 This should get you started
 ```kotlin
-       SimpleImagePicker.with(this)
+       SimpleImagePicker.with(activity)
             .start()
 ```
 For more customization
 
 ```kotlin
-       SimpleImagePicker.with(this)
+       SimpleImagePicker.with(activity)
             .setMultipleSelection(true)
             .setTheme(PickerTheme.dark)
             .setRequestCode(MY_PICKER_REQUEST_CODE)
