@@ -150,7 +150,7 @@ class MainActivity : AppCompatActivity() {
             .setResultCodeSuccess(CUSTOM_RESULT_CODE_SUCCESS)
             .setResultCodeCancel(CUSTOM_RESULT_CODE_CANCEL)
             .setResultDataKey(CUSTOM_DATA_KEY)
-            .build()
+            .start()
     }
 
     /**App Preferences*/

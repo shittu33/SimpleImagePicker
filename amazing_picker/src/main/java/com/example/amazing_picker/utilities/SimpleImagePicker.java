@@ -71,7 +71,7 @@ public class SimpleImagePicker {
         return this;
     }
 
-    public void build() {
+    public void start() {
         if (activity != null) {
             final Intent intent = new Intent(activity.getApplicationContext(), GalleryActivity.class);
             intent.putExtra(THEME_KEY, pickerTheme);
