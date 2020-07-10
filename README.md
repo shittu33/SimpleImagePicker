@@ -3,8 +3,7 @@ This is a yet another image picker that dispaly your images side by side by it d
 
 ![alt text](https://github.com/shittu33/SimpleImagePicker/blob/master/picker_1.gif?raw=true)![alt text](https://github.com/shittu33/SimpleImagePicker/blob/master/picker_2gif.gif?raw=true)![alt text](https://github.com/shittu33/SimpleImagePicker/blob/master/picker3-gif.gif?raw=true)
 
-## Installation
-[![](https://jitpack.io/v/shittu33/SimpleImagePicker.svg)](https://jitpack.io/#shittu33/SimpleImagePicker)
+## Installation [![](https://jitpack.io/v/shittu33/SimpleImagePicker.svg)](https://jitpack.io/#shittu33/SimpleImagePicker)
 
 Add this to your project's build.gradle
 ```
