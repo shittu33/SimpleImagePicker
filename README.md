@@ -1,22 +1,28 @@
 # Simple Image Picker
 This is a yet another image picker that dispaly your images side by side by it directory, it's been said that "If you can't find a way already, make one!" this is the one that suit my Usecase.
 
-![alt text](https://github.com/shittu33/SimpleImagePicker/blob/[master]/picker_1.gif?raw=true)
+![alt text](https://github.com/shittu33/SimpleImagePicker/blob/master/picker_1.gif?raw=true)![alt text](https://github.com/shittu33/SimpleImagePicker/blob/master/picker_2gif.gif?raw=true)![alt text](https://github.com/shittu33/SimpleImagePicker/blob/master/picker3-gif.gif?raw=true)
 
 ## Installation
 [![](https://jitpack.io/v/shittu33/SimpleImagePicker.svg)](https://jitpack.io/#shittu33/SimpleImagePicker)
 
+Add this to your project's build.gradle
+```
 	allprojects {
 		repositories {
 			...
 			maven { url 'https://jitpack.io' }
 		}
 	}
+```
 
+And add this to your module's build.gradle
+
+```
 	dependencies {
 	        implementation 'com.github.shittu33:SimpleImagePicker:v1.o'
 	}
-  
+  ```
 You have to migrate your project to support AndroidX by add following lines on gradle.properties file:
 ```Json
 android.useAndroidX=true
