@@ -1,6 +1,7 @@
 # Simple Image Picker
 This is a yet another image picker that dispaly your images side by side by it directory, it's been said that "If you can't find a way already, make one!" this is the one that suit my Usecase.
 
+![alt text](https://github.com/shittu33/SimpleImagePicker/blob/[master]/picker_1.gif?raw=true)
 
 ## Installation
 [![](https://jitpack.io/v/shittu33/SimpleImagePicker.svg)](https://jitpack.io/#shittu33/SimpleImagePicker)
