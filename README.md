@@ -8,20 +8,20 @@ This is a yet another image picker that dispaly your images side by side by it d
 
 Add this to your project's build.gradle
 ```
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
 	}
+}
 ```
 
 And add this to your module's build.gradle
 
 ```
-	dependencies {
-	        implementation 'com.github.shittu33:SimpleImagePicker:v1.o'
-	}
+dependencies {
+	implementation 'com.github.shittu33:SimpleImagePicker:v1.o'
+}
   ```
 You have to migrate your project to support AndroidX by add following lines on gradle.properties file:
 ```Json
